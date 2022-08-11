@@ -1,14 +1,17 @@
+import imp
 from django.shortcuts import render
 from django.http import HttpResponse
-
+from .models import Question
 # Create your views here.
 
-def detail(request, question_id, time):
-    """
-        Next Days Work 11/08/2022
-    """
-    time = "abc"
-    return HttpResponse("You're looking at question %s, and current tim is: %s " %question_id %time )
+
+def index(request):
+    latest_question_list =Question.objects.order_by('-publication_date')[:5]
+    output = ','.join([q.question_text for q in latest_question_list])
+    return HttpResponse(output)
+
+def detail(request, question_id):  
+    return HttpResponse("You're looking at question %s, and current tim is: " %question_id )
 
 def result(request, question_id):
     response = "You're looking at the results of question %s"
