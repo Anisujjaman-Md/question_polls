@@ -43,16 +43,17 @@ def detail(request, question_id):
           
 
 def result(request, question_id):
-    response = "You're looking at the results of question %s"
-    return HttpResponse(response % question_id)
+    question = get_object_or_404(Question, pk = question_id)
+    return render(request, 'polls/results.html', {'question': question})
 
+#Voting Funtion
 def vote(request, question_id):
     question =get_object_or_404(Question, pk = question_id)
     try:
         selected_choice = question.choice_set.get(pk=request.POST['choice'])
     except (KeyError, Choice.DoesNotExist):
         #Rapidly the question voting form
-        return render(request, 'polls/details.html', {'question': question, 'error_massage' : "You Don't select a choice",})
+        return render(request, 'polls/details.html', {'question': question, 'error_massage' : "Alert ! You Don't select a choice !!!",})
     else:
         """Always return an HttpResponseRedirect after succesfilly dealing 
         with POST data . This prevents data from being posted twice if a user hit Back button"""
