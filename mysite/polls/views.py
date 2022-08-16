@@ -1,9 +1,12 @@
+from audioop import reverse
 from re import template
-from django.http import HttpResponse
-from .models import Question
+import re
+from django.http import HttpResponse, HttpResponseRedirect
+from .models import Choice, Question
 from django.template import loader
 from django.http import Http404
 from django.shortcuts import get_object_or_404, render
+from django.urls import reverse
 
 
 """Create your views here."""
@@ -44,4 +47,15 @@ def result(request, question_id):
     return HttpResponse(response % question_id)
 
 def vote(request, question_id):
-    return HttpResponse("You're voting on question %s" %question_id)
+    question =get_object_or_404(Question, pk = question_id)
+    try:
+        selected_choice = question.choice_set.get(pk=request.POST['choice'])
+    except (KeyError, Choice.DoesNotExist):
+        #Rapidly the question voting form
+        return render(request, 'polls/details.html', {'question': question, 'error_massage' : "You Don't select a choice",})
+    else:
+        """Always return an HttpResponseRedirect after succesfilly dealing 
+        with POST data . This prevents data from being posted twice if a user hit Back button"""
+        selected_choice.votes +=1
+        selected_choice.save()
+        return HttpResponseRedirect(reverse('polls:result', args=(question.id,)))
