@@ -10,7 +10,6 @@ from django.urls import reverse
 from django.views import generic
 """Create your views here."""
 
-
 # # def index(request):
 # #     latest_question_list =Question.objects.order_by('-publication_date')[:5]
 # #     output = ','.join([q.question_text for q in latest_question_list])
@@ -57,7 +56,7 @@ class IndexView(generic.ListView):
 
 class DetailView(generic.DetailView):
     model = Question
-    template_name = 'polls/detail.html'
+    template_name = 'polls/details.html'
     
 class ResultView(generic.DetailView):
     model= Question
